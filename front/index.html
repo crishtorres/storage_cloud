@@ -4,21 +4,50 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Archivos</title>
-	<!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
 
 	<style type="text/css">
+		#container{
+			padding: 15px;
+		}
+
 		.recuadro{
-			border: 1px solid red;
+			border: 1px solid #d8d8d8;
 			padding: 10px;
+		}
+
+		.recuadro span{
+			margin-left: 5px;
 		}
 	</style>
 </head>
 <body>
-	<h1>Files</h1>
+	
+	<div class="container">
+		<h1>Files</h1>
+		<div class="row">
+			<div class="col-md-12">
+				<form class="form" action="http://localhost:5000/upload" method="POST" enctype="multipart/form-data">
+					<div class="form-group">
+						<label for="exampleInputFile">File input</label>
+						<input type="file" name="file">
+						<input type="text" id="path" name="path" value="" style="display: none;">
+						<p class="help-block">Example block-level help text here.</p>
+					</div>
+					<button type="submit" class="btn btn-default">Submit</button>
+				</form>  
+			</div>
+		</div>	
 
-	<div class="container" id="container">
+		<div class="row">
+			<div class="col-md-12">
+				<input type="text" value="" id="current_path" style="width : 100%" >
+			</div>
+		</div>
 		
+		<div class="row" id="container">
+			
+		</div>
 	</div>
 
 

@@ -30,16 +30,23 @@ function getFiles(path = ''){
 		let files = data[0]["files"]
 		let directories = data[0]["directories"]
 		let mainPathTmp = data[0]["path"]
+		let prev_path = data[0]["prev_path"]
 		let mainPath = ''
 		
+		const txtPath = document.getElementById('path');
+		txtPath.value = mainPathTmp;
 
-		let div1 = createNode('div'),
-	        img1 = createNode('img'),
-	        span1 = createNode('span');
+		const txtCurrenPath = document.getElementById('current_path');
+		txtCurrenPath.value = mainPathTmp;
+		
+		if(prev_path == '..'){
+			let div1 = createNode('div'),
+				img1 = createNode('img'),
+				span1 = createNode('span');
 		    
 		    div1.className = 'col-md-2 recuadro';
-		    img1.src = 'folder.png';
-		    img1.style.width = '20px';
+		    img1.src = 'up-arrows.svg';
+		    img1.style.width = '30px';
 
 		    let name1 = "..";
 
@@ -51,11 +58,12 @@ function getFiles(path = ''){
 
 	        const tmp1 = mainPath+'/'+name1;
 	        const linkPath = tmp1.replaceAll('/', '-');
-
+		
 		    span1.innerHTML = "<a class='folder' id='"+linkPath+"' href='#'>..</a>";
 		    append(div1, img1);
 		    append(div1, span1);
 		    append(container, div1);
+		}
 
 		const folders = directories.map(function(folder) {
 	    let div = createNode('div'),
@@ -63,8 +71,8 @@ function getFiles(path = ''){
 	        span = createNode('span');
 		    
 		    div.className = 'col-md-2 recuadro';
-		    img.src = 'folder.png';
-		    img.style.width = '20px';
+		    img.src = 'folder.svg';
+		    img.style.width = '30px';
 
 		    let name = folder;
 
@@ -94,8 +102,8 @@ function getFiles(path = ''){
 	        span = createNode('span');
 		    
 		    div.className = 'col-md-2 recuadro file';
-		    img.src = 'file.png';
-		    img.style.width = '20px';
+		    img.src = 'file.svg';
+		    img.style.width = '30px';
 
 		    let name = file;
 
