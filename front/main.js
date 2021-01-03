@@ -1,6 +1,6 @@
 'use strict'
 
-const base = 'http://localhost:5000/';
+const base = 'http://192.168.0.30:5000/';
 
 function createNode(element) {
     return document.createElement(element);
