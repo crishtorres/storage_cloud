@@ -150,15 +150,10 @@ def fn_rmelement():
 @app.route('/download_file/<string:filename>', methods = ['GET', 'POST'])
 def download_file(filename):
 
-	#if request.method == 'POST':
-
-		#filename = request.form['filename']
 	filename = filename.replace('*', '/')
 
 	download = os.path.dirname(os.path.abspath(filename)) 
-	#return download
 	file = os.path.split(filename)[1]
-	#return file
 	return send_from_directory(directory=download, filename=file, as_attachment=True)
 
 if __name__ == '__main__':

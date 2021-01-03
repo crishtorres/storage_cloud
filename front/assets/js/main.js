@@ -125,7 +125,7 @@ function createElement(isFolder = false, element, mainPath = ''){
   	img.style.width = '30px';
 
   	a_del.href = 'javascript:void(0);';
-  	a_del.innerHTML = '<img style="width:10px;" src="clear.svg" >';
+  	a_del.innerHTML = '<img style="width:10px;" src="assets/img/clear.svg" >';
 
   	const tmp = mainPath+'/'+element;
   	const linkPath = tmp.replaceAll('/', '*');
@@ -134,15 +134,14 @@ function createElement(isFolder = false, element, mainPath = ''){
   		a_download.href = base+'download_file/'+linkPath;
   		a_download.target = '_blank';
   	}
-  	a_download.innerHTML = '<img style="width:14px;" src="download.svg">';
+  	a_download.innerHTML = '<img style="width:14px;" src="assets/img/download.svg">';
 
-  	
 
   	a_del.className = 'btn_rmdir';
   	a_download.className = 'btn_download';
 
   	if(isFolder){
-  		img.src = 'folder.svg';
+  		img.src = 'assets/img/folder.svg';
 
   		let name = element;
 
@@ -226,7 +225,7 @@ function getFiles(path = ''){
 			span1 = createNode('span');				
 
 			div1.className = 'col-md-2 recuadro';
-			img1.src = 'up-arrows.svg';
+			img1.src = 'assets/img/up-arrows.svg';
 			img1.style.width = '30px';
 
 			let name1 = "..";

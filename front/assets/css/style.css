@@ -78,5 +78,6 @@
 }
 
 #current_path{
-	width: 100%;
+	/*width: 100%;*/
+	display: none;
 }
