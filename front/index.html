@@ -6,51 +6,61 @@
 	<title>Archivos</title>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
 
-	<style type="text/css">
-		#container{
-			padding: 15px;
-		}
+	<link rel="stylesheet" type="text/css" href="style.css">
 
-		.recuadro{
-			border: 1px solid #d8d8d8;
-			padding: 10px;
-		}
-
-		.recuadro span{
-			margin-left: 5px;
-		}
-	</style>
 </head>
 <body>
 	
 	<div class="container">
-		<h1>Files</h1>
+		<h1>Personal Cloud</h1>
 		<div class="row">
 			<div class="col-md-12">
-				<form class="form" action="http://192.168.0.30:5000/upload" method="POST" enctype="multipart/form-data">
+				<form class="form form-inline" action="http://192.168.0.4:5000/upload" method="POST" id="formUpload" enctype="multipart/form-data">
 					<div class="form-group">
-						<label for="exampleInputFile">File input</label>
-						<input type="file" name="file">
-						<input type="text" id="path" name="path" value="" style="display: none;">
-						<p class="help-block">Example block-level help text here.</p>
+						<input type="file" name="file" id="file_upload" multiple />
+						<input type="text" id="path" name="path" value="">
+						<p class="help-block">Seleccione el archivo que desea subir.</p>
 					</div>
-					<button type="submit" class="btn btn-default">Submit</button>
-				</form>  
+					<button type="submit" class="btn btn-default">Subir</button>
+				</form>
+				<div id="drop_zone">Suelta los archivos aquí</div>
+				<output id="list"></output>
+			
 			</div>
 		</div>	
 
 		<div class="row">
 			<div class="col-md-12">
-				<input type="text" value="" id="current_path" style="width : 100%" >
+				<input type="text" value="" id="current_path">
 			</div>
 		</div>
+
+		<div class="row">
+			<div class="col-md-12">
+				<button id="btnMkDir">Crear carpeta</button>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-12">				
+				<div id="flash_message" class="flash-message bg-success">
+					<div class="close_flash"><a id="close_flash" href="#">x</a></div>
+					<div id="flash_message_msg">
+						Carpeta creada correctamente
+					</div>
+				</div>
+				
+			</div>
+		</div>		
 		
 		<div class="row" id="container">
-			
+			<div class="recuadro"></div>
 		</div>
 	</div>
 
-
+	<iframe id="my_iframe" style="display:none;"></iframe>
+	
+	<script type="text/javascript" src="icons.js"></script>
 	<script type="text/javascript" src="main.js"></script>
 </body>
 </html>

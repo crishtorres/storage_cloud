@@ -1,0 +1,82 @@
+#container{
+	padding: 15px;
+}
+
+.recuadro{
+	border: 1px solid #d8d8d8;
+	padding: 10px;
+	position: relative;
+}
+.recuadro .btn_rmdir, .recuadro .btn_download{
+	display: block;
+	width: 10px;
+	height: 10px;
+	position: absolute;
+	top: 5%;
+	right: 5%;
+	content: "X";
+}
+
+.recuadro .btn_download{
+	top: 55%;
+	right: 6%;
+}
+
+.recuadro span{
+	margin-left: 5px;
+}
+
+.flash-message{
+	padding: 10px;
+	margin: 5px 0px;
+	display: none;
+	position: absolute;
+	right: 2%;
+	top: 0%;
+	z-index: 9999;
+}
+
+.close_flash{
+	display: inline-block;
+}
+
+#flash_message_msg{
+	display: inline-block;
+}
+
+#drop_zone{
+	border: 2px dashed #bbb;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	padding: 25px;
+	text-align: center;
+	font: 20pt bold 'Vollkorn';
+	color: #bbb;
+}
+
+.thumb_container{
+	display: inline;
+	max-width:90px;
+}
+
+.thumb {
+	height: 75px;
+	border: 1px dotted #ababab;
+	margin: 10px 5px 0 0;
+	width: auto;
+	max-width: 75px;
+}
+
+.name_thumb{
+	display: inline-block;
+	font-size: 0.8em;
+}
+
+#path{
+	display: none;
+}
+
+#current_path{
+	width: 100%;
+}
