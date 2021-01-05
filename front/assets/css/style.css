@@ -74,10 +74,10 @@
 }
 
 #path{
-	display: none;
+	/*display: none;*/
 }
 
 #current_path{
 	/*width: 100%;*/
-	display: none;
+	/*display: none;*/
 }

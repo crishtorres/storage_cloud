@@ -3,6 +3,7 @@
 const base = 'http://192.168.0.4:5000/';
 let error = false;
 let dropZone;
+let current_path;
 
 // Chequear que soporte File API
 if (window.File && window.FileReader && window.FileList && window.Blob) {
@@ -127,7 +128,15 @@ function createElement(isFolder = false, element, mainPath = ''){
   	a_del.href = 'javascript:void(0);';
   	a_del.innerHTML = '<img style="width:10px;" src="assets/img/clear.svg" >';
 
-  	const tmp = mainPath+'/'+element;
+  	//const tmp = mainPath+'/'+element;
+  	let tmp = '';
+
+  	if(mainPath.substring(mainPath.length-1,1) != '/'){
+  		tmp = mainPath+'/'+element;
+  	}else{
+  		tmp = mainPath+element;
+  	}
+
   	const linkPath = tmp.replaceAll('/', '*');
 
   	if(!isFolder){
@@ -189,7 +198,8 @@ function backdir(path = ''){
 		console.log(path.substring(0, lastBar));
 		return path.substring(0, lastBar).replaceAll('*', '/');
 	}else{
-		return path.replaceAll('*', '/');
+		return '/';
+		//return path.replaceAll('*', '/');
 	}
 }
 
@@ -197,7 +207,7 @@ function getFiles(path = ''){
 	const container = document.getElementById('container');
 	container.innerHTML = "";
 
-	const url = base+encodeURIComponent(path);
+	const url = base+'list/'+encodeURIComponent(path);
 	fetch(url)
 	.then((resp) => resp.json())
 	.then(function(data){
@@ -207,12 +217,14 @@ function getFiles(path = ''){
 		let prev_path = data[0]["prev_path"]
 		let mainPath = ''
 		
-		const txtPath = document.getElementById('path');
-		txtPath.value = mainPathTmp;
+		//const txtPath = document.getElementById('path');
+		//txtPath.value = mainPathTmp;
+		current_path = mainPathTmp;
 
-		const txtCurrenPath = document.getElementById('current_path');
-		txtCurrenPath.value = mainPathTmp;
-		
+		//const txtCurrenPath = document.getElementById('current_path');
+		//txtCurrenPath.value = mainPathTmp;
+		//current_path = mainPathTmp;
+
 		if(mainPathTmp.substring(mainPathTmp.length - 1, mainPathTmp.length) == '/'){
 			mainPath = mainPathTmp.replaceAll('/','');
 		}else{
@@ -261,14 +273,14 @@ const btnMkDir = document.getElementById('btnMkDir');
 
 if(btnMkDir){
 	btnMkDir.addEventListener('click', function(e){
-		const txtPath = document.getElementById('path');
+		//const txtPath = document.getElementById('path');
 		var dir_name = prompt("Ingrese el nombre de la carpeta", "");
 
 		if(dir_name!=''){
 
 			const data = new FormData();
 			data.append('dir_name', dir_name);
-			data.append('parent_dir', txtPath.value);
+			data.append('parent_dir', current_path);// txtPath.value);
 
 			const url = base+'mkdir';
 			fetch(url, {
@@ -278,7 +290,7 @@ if(btnMkDir){
 			.then((resp) => resp.json())
 			.then(function(res){
 				if(res[0]['status'] == 200){
-					var linkPath = txtPath.value;
+					var linkPath = current_path; //txtPath.value;
 					linkPath = linkPath.replaceAll('/', '*');
 					getFiles(linkPath)
 					showFlashMessage(res[0]['msg']);
@@ -298,13 +310,13 @@ function fn_rmdir(path, isFolder){
 	}
 
 	if (del){
-		const txtPath = document.getElementById('path');
+		//const txtPath = document.getElementById('path');
 		const data = new FormData();
 
 		path = path.replaceAll('*', '/');
 
 		data.append('dir_name', path);
-		data.append('parent_dir', txtPath.value);
+		data.append('parent_dir', current_path); //txtPath.value);
 
 		if(isFolder){
 			data.append('type', 'folder');
@@ -320,7 +332,7 @@ function fn_rmdir(path, isFolder){
 		.then((resp) => resp.json())
 		.then(function(res){
 			if(res[0]['status'] == 200){
-				var linkPath = txtPath.value;
+				var linkPath = current_path; //txtPath.value;
 				linkPath = linkPath.replaceAll('/', '*');
 				getFiles(linkPath)
 				showFlashMessage(res[0]['msg']);
@@ -375,8 +387,8 @@ async function upload(){
 async function uploadFiles(){
 	
 	var tot = 0;
-	const txtPath = document.getElementById('path');
-	var path = txtPath.value.replaceAll('*', '/');
+	//const txtPath = document.getElementById('path');
+	var path = current_path.replaceAll('*', '');// txtPath.value.replaceAll('*', '/');
 
 	await Promise.all(fileList.map(async (file) => {
 		var data = new FormData();
@@ -400,8 +412,8 @@ async function uploadFiles(){
 
 			if(tot >= fileList.length){
 				if(!error){
-					const txtPath = document.getElementById('path');
-					var linkPath = txtPath.value;
+					//const txtPath = document.getElementById('path');
+					var linkPath = current_path;//txtPath.value;
 					linkPath = linkPath.replaceAll('/', '*');
 
 					getFiles(linkPath)
@@ -411,25 +423,4 @@ async function uploadFiles(){
 			}			
 		});
 	}));
-}
-
-/*
-function Download(url) {
-    document.getElementById('my_iframe').src = url;
-};*/
-
-function download(path = ''){
-	//const data = new FormData();
-	//data.append('filename', "C:-Recibir-distrinic-license.txt");
-
-	const url = base+'download/C:-Recibir-distrinic-license.txt';
-	fetch(url, {
-		method: 'GET'
-	})
-	.then(function(res){
-		alert(res);		
-	})
-	.catch(function(error){
-		console.log(error);
-	});
 }
