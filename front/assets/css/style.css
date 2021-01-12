@@ -81,3 +81,7 @@
 	/*width: 100%;*/
 	/*display: none;*/
 }
+
+.folder:hover{
+	cursor: pointer;
+}

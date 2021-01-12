@@ -1,9 +1,12 @@
 'use strict'
 
-const base = 'http://192.168.0.4:5000/';
+const base = 'http://localhost:5000/';
 let error = false;
 let dropZone;
 let current_path;
+let _token;
+
+const form = document.getElementById('form_login');
 
 // Chequear que soporte File API
 if (window.File && window.FileReader && window.FileList && window.Blob) {
@@ -11,6 +14,8 @@ if (window.File && window.FileReader && window.FileList && window.Blob) {
 } else {
 	alert('File API no es soportado por el navegador!.');
 }
+
+form.addEventListener('submit', login);
 
 dropZone = document.getElementById("drop_zone");
 dropZone.addEventListener("dragenter", dragenter, false);
@@ -37,6 +42,33 @@ function drop(e) {
 	var files = dt.files;
 
 	handleFiles(files);
+}
+
+
+function login(e){
+	e.preventDefault();
+	let user = document.getElementById('user_lg').value;
+	let pass = document.getElementById('pass_lg').value;
+
+	const myHeaders = new Headers();
+	myHeaders.append("Authorization", "Basic " + btoa(user + ":" + pass));
+	myHeaders.append("Access-Control-Allow-Origin", "*");
+
+
+	const url = base+'login';
+	fetch(url, {
+		method: 'POST',
+		headers: myHeaders,
+		mode: 'cors'
+	})
+	.then((resp) => resp.json())
+	.then(function(data){
+		_token = data.token;
+		getFiles();
+	})
+	.catch(function(error){
+		console.log(error);
+	});
 }
 
 function handleFiles(files) {
@@ -166,7 +198,8 @@ function createElement(isFolder = false, element, mainPath = ''){
 	    	name = name.substring(0,12) +"...";
 	    }
 
-	    span.innerHTML = "<a class='folder' id='"+linkPath+"' href='#'>"+`${name}`+"</a>";
+	    //span.innerHTML = "<a class='folder' id='"+linkPath+"' href='#'>"+`${name}`+"</a>";
+	    span.innerHTML = `${name}`;
 	}
 
 	a_del.onclick = function() {
@@ -207,14 +240,38 @@ function getFiles(path = ''){
 	const container = document.getElementById('container');
 	container.innerHTML = "";
 
+	const myHeaders = new Headers();
+
+	myHeaders.append('Content-Type', 'application/json');
+	myHeaders.append('x-access-tokens', _token);
+
 	const url = base+'list/'+encodeURIComponent(path);
-	fetch(url)
+	fetch(url,{method: 'GET',headers: myHeaders})
 	.then((resp) => resp.json())
 	.then(function(data){
+
+		let ath = data.authorized
+
+		if(ath != 'ok'){
+			let frm = document.getElementById('form_login');
+			frm.setAttribute('action', base+'/login');
+			$("#modalLogin").modal('show');
+			//document.getElementById('modalLogin').style.display = 'block';
+			return;
+		}else{
+			$("#modalLogin").modal('hide');
+		}
+
+		/*
 		let files = data[0]["files"]
 		let directories = data[0]["directories"]
 		let mainPathTmp = data[0]["path"]
 		let prev_path = data[0]["prev_path"]
+		*/
+		let files = data.files
+		let directories = data.directories
+		let mainPathTmp = data.path
+		let prev_path = data.prev_path
 		let mainPath = ''
 		
 		//const txtPath = document.getElementById('path');
@@ -276,7 +333,7 @@ if(btnMkDir){
 		//const txtPath = document.getElementById('path');
 		var dir_name = prompt("Ingrese el nombre de la carpeta", "");
 
-		if(dir_name!=''){
+		if(dir_name.trim()!=''){
 
 			const data = new FormData();
 			data.append('dir_name', dir_name);

@@ -12,13 +12,36 @@
 <body>
 	
 	<div class="container">
+		<nav class="navbar navbar-default">
+			<div class="container-fluid">
+				<!-- Brand and toggle get grouped for better mobile display -->
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="#">Brand</a>
+				</div>
+
+				<!-- Collect the nav links, forms, and other content for toggling -->
+				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+					
+					<ul class="nav navbar-nav navbar-right">
+						<!--<li><a href="#">Sing in</a></li>-->
+						<li><a href="#">Logout</a></li>
+					</ul>
+				</div><!-- /.navbar-collapse -->
+			</div><!-- /.container-fluid -->
+		</nav>
+
 		<h1>Personal Cloud</h1>
 		<div class="row">
 			<div class="col-md-12">
 				<form class="form form-inline" action="http://192.168.0.4:5000/upload" method="POST" id="formUpload" enctype="multipart/form-data">
 					<div class="form-group">
 						<input type="file" name="file" id="file_upload" multiple />
-						<input type="text" id="path" name="path" value="">
 						<p class="help-block">Seleccione el archivo que desea subir.</p>
 					</div>
 					<button type="submit" class="btn btn-default">Subir</button>
@@ -28,16 +51,16 @@
 			
 			</div>
 		</div>	
-
-		<div class="row">
-			<div class="col-md-12">
-				<input type="text" value="" id="current_path">
-			</div>
-		</div>
  
 		<div class="row">
-			<div class="col-md-12">
-				<button id="btnMkDir">Crear carpeta</button>
+			<div class="col-md-8">
+				<button id="btnMkDir" class="btn btn-info">Crear carpeta</button>
+			</div>
+			<div class="col-md-2">
+				<button id="btnMkDir" class="btn btn-danger">Eliminar contenido</button>
+			</div>
+			<div class="col-md-2">
+				<button id="btnMkDir" class="btn btn-primary">Descargar contenido</button>
 			</div>
 		</div>
 
@@ -57,6 +80,42 @@
 			<div class="recuadro"></div>
 		</div>
 	</div>
+
+
+	<div class="modal " tabindex="-1" role="dialog" id="modalLogin" >
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">Login</h4>
+				</div>
+
+				<div class="modal-body">
+					<form id="form_login" action="/login" method="POST">
+						<div class="form-group">
+							<label for="email">Email</label>
+							<input type="text" id="user_lg" name="email" class="form-control">
+						</div>
+						
+						<div class="form-group">
+							<label for="password">Password</label>
+							<input type="password" id="pass_lg" name="password" class="form-control">
+						</div>
+
+						<button>Iniciar</button>
+					</form>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-primary">Save changes</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 	<script type="text/javascript" src="assets/js/icons.js"></script>
 	<script type="text/javascript" src="assets/js/main.js"></script>
