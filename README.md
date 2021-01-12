@@ -2,4 +2,14 @@
 
 Nube personal realizada con Python (Flask) y Javascript
 
-La misma se encuentra en desarrollo 
+Instalar librerias
+
+```python
+pip install -r requeriments
+```
+Para lanzar la aplicación, ejecutar el directorio raíz de la app (antes de back)
+
+```python
+flask run
+```
+## La misma se encuentra en desarrollo 
