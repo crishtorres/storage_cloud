@@ -1,12 +1,23 @@
 #container{
 	padding: 15px;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-start;
 }
 
 .recuadro{
 	border: 1px solid #d8d8d8;
 	padding: 10px;
-	position: relative;
+	width: 200px;
+	margin: 5px;
+	/*position: relative;*/
+	/*margin: 5px;*/
 }
+
+.recuadro:hover {
+	background: rgb(241 241 241);
+}
+
 .recuadro .btn_rmdir, .recuadro .btn_download{
 	display: block;
 	width: 10px;
@@ -68,7 +79,7 @@
 	max-width: 75px;
 }
 
-.name_thumb{
+.name_thumb {
 	display: inline-block;
 	font-size: 0.8em;
 }
@@ -77,11 +88,23 @@
 	/*display: none;*/
 }
 
-#current_path{
+#current_path {
 	/*width: 100%;*/
 	/*display: none;*/
 }
 
 .folder:hover{
 	cursor: pointer;
+}
+
+.btn-ui span {
+	display: flex;
+	align-items: center;
+	justify-content: space-evenly;
+	width: 15rem;
+	font-size: 0.9em;
+}
+
+.btn-ui span img {
+	max-width: 20px;
 }

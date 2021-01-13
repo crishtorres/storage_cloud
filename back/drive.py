@@ -176,3 +176,19 @@ def download_file(filename):
 	download = getFullPath(os.path.split(filename)[0])# UPLOAD_FOLDER+""+os.path.split(filename)[0]#filename#os.path.dirname(os.path.abspath(filename)) 
 	file = os.path.split(filename)[1]
 	return send_from_directory(directory=download, filename=file, as_attachment=True)
+
+@drive.route('/get_file/<string:filename>', methods = ['GET', 'POST'])
+def get_file(filename):
+	filename = filename.replace('*', '/')
+	download = getFullPath(filename) #getFullPath(os.path.split(filename)[0])
+	#file = os.path.split(filename)[1]
+
+	print(download)
+	#print(download)
+	#print(file)
+
+	#filename = 
+
+	with open(download, 'r') as f: 
+		return {"content":"<pre>"+f.read()+"</pre>"}
+		#return {"content":f.read()}

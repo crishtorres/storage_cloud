@@ -1,10 +1,10 @@
 'use strict'
 
 const base = 'http://localhost:5000/';
+const gifLoader = './assets/img/loader.gif';
 let error = false;
 let dropZone;
 let current_path;
-let _token;
 
 const form = document.getElementById('form_login');
 
@@ -63,7 +63,7 @@ function login(e){
 	})
 	.then((resp) => resp.json())
 	.then(function(data){
-		_token = data.token;
+		localStorage.setItem('personal_cloud_token', data.token) //CAMBIAR!
 		getFiles();
 	})
 	.catch(function(error){
@@ -126,6 +126,8 @@ document.addEventListener('click', function(e){
 	if(e.target){
 		if(e.target.className == 'folder'){
 			getFiles(e.target.id);
+		}else if (e.target.className == 'file') {
+			getContentFile(e.target.id);
 		}
 	}
 });
@@ -180,26 +182,25 @@ function createElement(isFolder = false, element, mainPath = ''){
 
   	a_del.className = 'btn_rmdir';
   	a_download.className = 'btn_download';
+  	
+  	let name = element;
+
+  	if (name.length > 15){
+    	name = name.substring(0,12) +"...";
+    }
 
   	if(isFolder){
   		img.src = 'assets/img/folder.svg';
 
-  		let name = element;
-
-  		if (name.length > 15){
+  		/*if (name.length > 15){
   			name = name.substring(0,12) +"...";
-  		}
+  		}*/
         span.innerHTML = "<a class='folder' id='"+linkPath+"' href='#'>"+`${name}`+"</a>";
     }else{
     	img.src = getImgIcon(getFileExtension(element));
-	    let name = element;
 
-	    if (name.length > 15){
-	    	name = name.substring(0,12) +"...";
-	    }
-
-	    //span.innerHTML = "<a class='folder' id='"+linkPath+"' href='#'>"+`${name}`+"</a>";
-	    span.innerHTML = `${name}`;
+	    span.innerHTML = "<a class='file' id='"+linkPath+"' href='#'>"+`${name}`+"</a>";
+	    //span.innerHTML = `${name}`;
 	}
 
 	a_del.onclick = function() {
@@ -214,6 +215,28 @@ function createElement(isFolder = false, element, mainPath = ''){
 	}
 	append(container, div);
 
+}
+
+function getContentFile(path){
+
+	let modalFile_body = document.getElementById('modalFile_body')
+	modalFile_body.innerHTML = ""
+
+	const myHeaders = new Headers();
+
+	myHeaders.append('Content-Type', 'application/json');
+	myHeaders.append('x-access-tokens', localStorage.getItem('personal_cloud_token'));
+
+	const url = base+'get_file/'+encodeURIComponent(path);
+	fetch(url,{method: 'GET',headers: myHeaders})
+	.then((resp) => resp.json())
+	.then(function(data){
+		modalFile_body.innerHTML = data.content;
+		$('#modalFile').modal('show');
+	})
+	.catch(function(error){
+		console.log(error);
+	});
 }
 
 function backdir(path = ''){
@@ -232,18 +255,17 @@ function backdir(path = ''){
 		return path.substring(0, lastBar).replaceAll('*', '/');
 	}else{
 		return '/';
-		//return path.replaceAll('*', '/');
 	}
 }
 
 function getFiles(path = ''){
 	const container = document.getElementById('container');
-	container.innerHTML = "";
+	container.innerHTML = "<img style='margin:auto' class='img-responsive' src='" + gifLoader + "' >";
 
 	const myHeaders = new Headers();
 
 	myHeaders.append('Content-Type', 'application/json');
-	myHeaders.append('x-access-tokens', _token);
+	myHeaders.append('x-access-tokens', localStorage.getItem('personal_cloud_token'));
 
 	const url = base+'list/'+encodeURIComponent(path);
 	fetch(url,{method: 'GET',headers: myHeaders})
@@ -274,19 +296,15 @@ function getFiles(path = ''){
 		let prev_path = data.prev_path
 		let mainPath = ''
 		
-		//const txtPath = document.getElementById('path');
-		//txtPath.value = mainPathTmp;
 		current_path = mainPathTmp;
-
-		//const txtCurrenPath = document.getElementById('current_path');
-		//txtCurrenPath.value = mainPathTmp;
-		//current_path = mainPathTmp;
 
 		if(mainPathTmp.substring(mainPathTmp.length - 1, mainPathTmp.length) == '/'){
 			mainPath = mainPathTmp.replaceAll('/','');
 		}else{
 			mainPath = mainPathTmp;
 		}
+
+		container.innerHTML = "";
 
 		if(prev_path == '..'){
 			let div1 = createNode('div'),
@@ -324,16 +342,16 @@ function getFiles(path = ''){
 }
 
 getFiles();
-//download();
 
 const btnMkDir = document.getElementById('btnMkDir');
 
 if(btnMkDir){
 	btnMkDir.addEventListener('click', function(e){
 		//const txtPath = document.getElementById('path');
-		var dir_name = prompt("Ingrese el nombre de la carpeta", "");
+		let dir_name = '';
+		dir_name = prompt("Ingrese el nombre de la carpeta", "");
 
-		if(dir_name.trim()!=''){
+		if(dir_name){
 
 			const data = new FormData();
 			data.append('dir_name', dir_name);
@@ -480,4 +498,12 @@ async function uploadFiles(){
 			}			
 		});
 	}));
+}
+
+
+let btnInitDir = document.getElementById('btnInitDir')
+if(btnInitDir){
+	btnInitDir.addEventListener('click', () => {
+		getFiles();
+	});
 }

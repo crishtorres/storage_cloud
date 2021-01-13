@@ -27,7 +27,6 @@
 
 				<!-- Collect the nav links, forms, and other content for toggling -->
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-					
 					<ul class="nav navbar-nav navbar-right">
 						<!--<li><a href="#">Sing in</a></li>-->
 						<li><a href="#">Logout</a></li>
@@ -54,13 +53,18 @@
  
 		<div class="row">
 			<div class="col-md-8">
-				<button id="btnMkDir" class="btn btn-info">Crear carpeta</button>
+				<button id="btnInitDir" class="btn btn-ui">
+					<span><img src="assets/img/root-directory.svg" class="img-responsive"> Ir a raiz</span>
+				</button>
+				<button id="btnMkDir" class="btn btn-ui">
+					<span><img src="assets/img/add-folder.svg" class="img-responsive"> Crear carpeta</span>
+				</button>
+				<button id="" class="btn btn-ui">
+					<span><img src="assets/img/rar_download.svg" class="img-responsive"> Descargar contenido</span>
+				</button>
 			</div>
 			<div class="col-md-2">
-				<button id="btnMkDir" class="btn btn-danger">Eliminar contenido</button>
-			</div>
-			<div class="col-md-2">
-				<button id="btnMkDir" class="btn btn-primary">Descargar contenido</button>
+				
 			</div>
 		</div>
 
@@ -81,8 +85,8 @@
 		</div>
 	</div>
 
-
-	<div class="modal " tabindex="-1" role="dialog" id="modalLogin" >
+	<!-- Modal Login -->
+	<div class="modal fade" tabindex="-1" role="dialog" id="modalLogin" >
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -105,14 +109,30 @@
 						<button>Iniciar</button>
 					</form>
 				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+
+	<!-- Modal show File -->
+	<div class="modal fade" tabindex="-1" role="dialog" id="modalFile" >
+		<div class="modal-dialog modal-lg" style="width: 80%;" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">Contenido de Archivo</h4>
+				</div>
+
+				<div class="modal-body" id="modalFile_body">
+					
+				</div>
 
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-primary">Save changes</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
 				</div>
 			</div><!-- /.modal-content -->
 		</div><!-- /.modal-dialog -->
 	</div><!-- /.modal -->
+
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>

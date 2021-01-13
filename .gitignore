@@ -1,3 +1,4 @@
 env/
 storage/
 back/__pycache__/
+todo.txt
