@@ -8,19 +8,15 @@ Instalar librerias
 pip install -r requeriments
 ```
 
-Exportamos las variables de entornos necesarias
+Creamos un archivo .env para las variables de entorno en la raiz del a app (antes de back)
 
-En Linux
 ```bash
-export FLASK_APP=back
-export FLASK_DEBUG=1
+FLASK_ENV=development
+FLASK_APP=back
+FLASK_RUN_PORT=5000
+SECRET_KEY='TU SECRET KEY'
 ```
 
-En Windows
-```bash
-set FLASK_APP=back
-set FLASK_DEBUG=1
-```
 Para lanzar la aplicación, ejecutar el directorio raíz de la app (antes de back)
 
 ```python

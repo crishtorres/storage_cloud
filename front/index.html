@@ -91,22 +91,22 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title">Login</h4>
+					<h4 class="modal-title text-center"><b>Login</b></h4>
 				</div>
 
 				<div class="modal-body">
 					<form id="form_login" action="/login" method="POST">
 						<div class="form-group">
-							<label for="email">Email</label>
-							<input type="text" id="user_lg" name="email" class="form-control">
+							
+							<input type="text" id="user_lg" name="user" class="form-control" placeholder="Usuario">
 						</div>
 						
 						<div class="form-group">
-							<label for="password">Password</label>
-							<input type="password" id="pass_lg" name="password" class="form-control">
+							
+							<input type="password" id="pass_lg" name="password" class="form-control" placeholder="Password">
 						</div>
 
-						<button>Iniciar</button>
+						<button class="btn form-control btn_login">Iniciar</button>
 					</form>
 				</div>
 			</div><!-- /.modal-content -->
@@ -139,5 +139,6 @@
 
 	<script type="text/javascript" src="assets/js/icons.js"></script>
 	<script type="text/javascript" src="assets/js/main.js"></script>
+
 </body>
 </html>

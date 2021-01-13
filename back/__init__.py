@@ -5,9 +5,14 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import uuid
 import jwt
 import datetime
+from os import environ
 
 db = SQLAlchemy()
-SECRET_KEY = 'ASF412341S@'
+
+SECRET_KEY = environ.get('SECRET_KEY') #'ASF412341S@'
+print(SECRET_KEY)
+if not SECRET_KEY:
+    raise ValueError("No se informo la SECRET_KEY para la aplicación")
 
 def create_app():
 	app = Flask(__name__)
@@ -17,7 +22,7 @@ def create_app():
 	app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
 	app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
-	db.init_app(app)
+	db.init_app(app) 
 
 	from .drive import drive as drive_blueprint
 	app.register_blueprint(drive_blueprint)

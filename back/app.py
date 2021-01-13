@@ -5,11 +5,19 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import uuid
 import jwt
 import datetime
+import os
+from dotenv import load_dotenv
 
 app = Flask(__name__)
 CORS(app)
 
-SECRET_KEY = 'ASF412341S@'
+dotenv_path = join(dirname(__file__), '.env')
+
+#SECRET_KEY = 'ASF412341S@'
+SECRET_KEY = os.environ.get("SECRET_KEY")
+
+if not SECRET_KEY:
+    raise ValueError("No se informo la SECRET_KEY para la aplicación")
 
 app.config['SECRET_KEY'] = SECRET_KEY
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
