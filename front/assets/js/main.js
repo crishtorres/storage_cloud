@@ -158,7 +158,7 @@ function createElement(isFolder = false, element, mainPath = ''){
 	a_del = createNode('a'),
 	a_download = createNode('a');
 
-	div.className = 'col-md-2 recuadro';
+	div.className = 'col-md-2 col-xs-6 recuadro';
 	img.style.width = '30px';
 
 	a_del.href = 'javascript:void(0);';
@@ -280,7 +280,7 @@ function backdir(path = ''){
 	}
 
 	if(lastBar > 0){
-		console.log(path.substring(0, lastBar));
+		//console.log(path.substring(0, lastBar));
 		return path.substring(0, lastBar).replaceAll('*', '/');
 	}else{
 		return '/';
@@ -342,7 +342,7 @@ function getFiles(path = ''){
 			img1 = createNode('img'),
 			span1 = createNode('span');				
 
-			div1.className = 'col-md-2 recuadro';
+			div1.className = 'col-md-2 col-xs-6 recuadro';
 			img1.src = 'assets/img/up-arrows.svg';
 			img1.style.width = '30px';
 
@@ -417,11 +417,16 @@ if(btnMkDir){
 }
 
 function fn_rmdir(path, isFolder){
+	let option = '';
+
 	if(isFolder){
-		let del = confirm("Esta seguro que desea eliminar la carpeta seleccionada?");
+		option = ' la carpeta ';	
 	}else{
-		let del = confirm("Esta seguro que desea eliminar el archivo seleccionada?");
+		option = ' el archivo ';
+		//let del = confirm("Esta seguro que desea eliminar el archivo seleccionada?");
 	}
+
+	let del = confirm("Esta seguro que desea eliminar " + option + " seleccionada?");
 
 	if (del){
 		//const txtPath = document.getElementById('path');
@@ -502,6 +507,13 @@ window.onload=function() {
 	} 
 } 
 
+let btn_upDesktop = document.getElementById('btn_upDesktop');
+if(btn_upDesktop){
+	btn_upDesktop.addEventListener('click', () => {
+		upload();
+	});
+}
+
 async function upload(){
 	await uploadFiles()
 }
@@ -541,6 +553,7 @@ async function uploadFiles(){
     		}else{
     			error = true;
     			showFlashMessage(res.msg, true);
+
     		}
 
     		if(tot >= fileList.length){

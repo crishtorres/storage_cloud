@@ -128,3 +128,59 @@
 	margin-bottom: 0;
 	padding-bottom: 0;
 }
+
+.btn_upload{
+	min-height: 70px;
+}
+
+#form_mobile{
+	display: none;
+}
+
+@media screen and ( max-width: 767px ){
+	#form_mobile{
+		display: block;
+	}
+
+	.btn_upload{
+		min-height: 0;
+	}
+
+	.no_mobile {
+		display: none;
+	}
+
+	.btn-ui span {
+		width: 100%;
+	}
+
+	.btn-ui{
+		width: 100%;
+	}
+
+	.container_btns{
+		display: flex;
+		margin-top: 10px;
+		justify-content: space-around;
+	}
+
+	.recuadro {
+		width: 100%;
+	}
+
+	.recuadro img {
+		width: 25px !important;  
+	}
+
+	.btn_rmdir img {
+		width: 10px !important;
+	}
+
+	.btn_download img {
+		width: 14px !important;
+	}
+
+	.btn_upload {
+		width: 100%;
+	}
+}
