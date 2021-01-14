@@ -5,11 +5,13 @@ from . import SECRET_KEY
 import uuid
 import jwt
 import datetime
+from .resources import token_required
 
 users = Blueprint('users', __name__)
 
 @users.route('/register', methods=['GET', 'POST'])
-def signup_user():  
+@token_required
+def signup_user(user):  
 	data = request.get_json()  
 
 	hashed_password = generate_password_hash(data['password'], method='sha256')
@@ -38,7 +40,8 @@ def login_user():
 	return make_response('could not verify',  401, {'WWW.Authentication': 'Basic realm: "login required"'})
 
 @users.route('/users', methods=['GET'])
-def get_all_users():  
+@token_required
+def get_all_users(user):  
    
 	users = Users.query.all() 
 

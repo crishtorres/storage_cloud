@@ -38,8 +38,8 @@ function drop(e) {
 	e.stopPropagation();
 	e.preventDefault();
 
-	var dt = e.dataTransfer;
-	var files = dt.files;
+	let dt = e.dataTransfer;
+	let files = dt.files;
 
 	handleFiles(files);
 }
@@ -53,7 +53,6 @@ function login(e){
 	const myHeaders = new Headers();
 	myHeaders.append("Authorization", "Basic " + btoa(user + ":" + pass));
 	myHeaders.append("Access-Control-Allow-Origin", "*");
-
 
 	const url = base+'login';
 	fetch(url, {
@@ -81,15 +80,15 @@ function handleFiles(files) {
 		fileList.push(file);
 		let imageType = /image.*/;
 
-		var div = document.createElement("div");
+		let div = document.createElement("div");
 		div.className = 'thumb_container';
 
-		var img = document.createElement("img");
+		let img = document.createElement("img");
 		img.classList.add("obj");
 		img.file = file;
 		img.className = 'thumb';
 
-		var span = document.createElement("span");
+		let span = document.createElement("span");
 
 		name = file.name;
 		if (name.length > 15){
@@ -104,7 +103,7 @@ function handleFiles(files) {
 
 		preview.appendChild(div);
 
-		var reader = new FileReader();
+		let reader = new FileReader();
 		if (file.type.match(imageType)) {
 			reader.onload = (function(aImg) { return function(e) { aImg.src = e.target.result; }; })(img);
 		}else{
@@ -127,13 +126,16 @@ document.addEventListener('click', function(e){
 		if(e.target.className == 'folder'){
 			getFiles(e.target.id);
 		}else if (e.target.className == 'file') {
-			getContentFile(e.target.id);
+			//getContentFile(e.target.id);
+		}else if (e.target.parentElement.className == 'btn_download'){
+			e.preventDefault(e)
+			getDownloadFile(e.target.parentElement.id, e.target.parentElement.name);
 		}
 	}
 });
 
 function getImgIcon(ext){
-	for(var x of db_img){
+	for(let x of db_img){
 		if(x.ext != ''){
 			if(ext == x.ext){
 				return 'icons/' + x.image;
@@ -151,16 +153,16 @@ function getFileExtension(filename) {
 function createElement(isFolder = false, element, mainPath = ''){
 
 	let div = createNode('div'),
-  	img = createNode('img'),
-  	span = createNode('span'),
-  	a_del = createNode('a'),
-  	a_download = createNode('a');
+	img = createNode('img'),
+	span = createNode('span'),
+	a_del = createNode('a'),
+	a_download = createNode('a');
 
-  	div.className = 'col-md-2 recuadro';
-  	img.style.width = '30px';
+	div.className = 'col-md-2 recuadro';
+	img.style.width = '30px';
 
-  	a_del.href = 'javascript:void(0);';
-  	a_del.innerHTML = '<img style="width:10px;" src="assets/img/clear.svg" >';
+	a_del.href = 'javascript:void(0);';
+	a_del.innerHTML = '<img style="width:10px;" src="assets/img/clear.svg" >';
 
   	//const tmp = mainPath+'/'+element;
   	let tmp = '';
@@ -174,8 +176,10 @@ function createElement(isFolder = false, element, mainPath = ''){
   	const linkPath = tmp.replaceAll('/', '*');
 
   	if(!isFolder){
-  		a_download.href = base+'download_file/'+linkPath;
+  		a_download.href = "#"; //base+'download_file/'+linkPath;
+  		a_download.id = linkPath
   		a_download.target = '_blank';
+  		a_download.name = element;
   	}
   	a_download.innerHTML = '<img style="width:14px;" src="assets/img/download.svg">';
 
@@ -186,8 +190,8 @@ function createElement(isFolder = false, element, mainPath = ''){
   	let name = element;
 
   	if (name.length > 15){
-    	name = name.substring(0,12) +"...";
-    }
+  		name = name.substring(0,12) +"...";
+  	}
 
   	if(isFolder){
   		img.src = 'assets/img/folder.svg';
@@ -195,11 +199,11 @@ function createElement(isFolder = false, element, mainPath = ''){
   		/*if (name.length > 15){
   			name = name.substring(0,12) +"...";
   		}*/
-        span.innerHTML = "<a class='folder' id='"+linkPath+"' href='#'>"+`${name}`+"</a>";
-    }else{
-    	img.src = getImgIcon(getFileExtension(element));
+  		span.innerHTML = "<a class='folder' id='"+linkPath+"' href='#'>"+`${name}`+"</a>";
+  	}else{
+  		img.src = getImgIcon(getFileExtension(element));
 
-	    span.innerHTML = "<a class='file' id='"+linkPath+"' href='#'>"+`${name}`+"</a>";
+  		span.innerHTML = "<a class='file' id='"+linkPath+"' href='#'>"+`${name}`+"</a>";
 	    //span.innerHTML = `${name}`;
 	}
 
@@ -239,6 +243,31 @@ function getContentFile(path){
 	});
 }
 
+function make_breadcrumb(path = ''){
+	//let pathf = path.replaceAll('*', '/')
+
+	let paths = path.split('*')
+	let html = ""
+	let backFolder = ""
+
+	for (let i = 0; i < paths.length; i++){
+		if(paths[i]!= ''){
+			backFolder+="*"+paths[i]
+		}else{
+			backFolder = ""
+		}
+
+		if(i == (paths.length - 1)){ 
+			html+=`<li class='active'>${paths[i]}</li>`
+		}else{
+			html+=`<li><a class='folder' id='${backFolder}' href='#'>${paths[i]}</a></li>`
+		}
+			
+	}
+
+	document.getElementById('list_breadcrumb').innerHTML = html
+}
+
 function backdir(path = ''){
 	let pathf = path.replaceAll('*', '/');
 	let lastBar = 0;
@@ -273,17 +302,19 @@ function getFiles(path = ''){
 	.then(function(data){
 
 		let ath = data.authorized
-
+		/*
 		if(ath != 'ok'){
-			let frm = document.getElementById('form_login');
-			frm.setAttribute('action', base+'/login');
-			$("#modalLogin").modal('show');
-			//document.getElementById('modalLogin').style.display = 'block';
+			showLoginForm(true);			
 			return;
 		}else{
-			$("#modalLogin").modal('hide');
+			showLoginForm(false);
+			//$("#modalLogin").modal('hide');
+		}*/
+		if(!tokenIsValid(ath)){
+			return;
 		}
 
+		make_breadcrumb(path);
 		/*
 		let files = data[0]["files"]
 		let directories = data[0]["directories"]
@@ -329,11 +360,11 @@ function getFiles(path = ''){
 
 	    const folders = directories.map(function(folder) {
 	    	createElement(true, folder, mainPathTmp);
-		})
+	    })
 
 	    const archs = files.map(function(file) {
 	    	createElement(false, file, mainPathTmp);
-		})
+	    })
 
 	})
 	.catch(function(error){
@@ -357,20 +388,28 @@ if(btnMkDir){
 			data.append('dir_name', dir_name);
 			data.append('parent_dir', current_path);// txtPath.value);
 
+			const myHeaders = new Headers();
+			myHeaders.append('x-access-tokens', localStorage.getItem('personal_cloud_token'));
+
 			const url = base+'mkdir';
 			fetch(url, {
 				method: 'POST',
-				body: data
+				body: data,
+				headers: myHeaders
 			})
 			.then((resp) => resp.json())
 			.then(function(res){
-				if(res[0]['status'] == 200){
-					var linkPath = current_path; //txtPath.value;
+				if(res.status == 200){
+					let linkPath = current_path; //txtPath.value;
 					linkPath = linkPath.replaceAll('/', '*');
 					getFiles(linkPath)
-					showFlashMessage(res[0]['msg']);
+					showFlashMessage(res.msg);
 				}else{
-					showFlashMessage(res[0]['msg'], true);
+					if(!tokenIsValid(res.authorized)){
+						return
+					}else{
+						showFlashMessage(res.msg, true);
+					}
 				}			
 			});
 		}
@@ -379,9 +418,9 @@ if(btnMkDir){
 
 function fn_rmdir(path, isFolder){
 	if(isFolder){
-		var del = confirm("Esta seguro que desea eliminar la carpeta seleccionada?");
+		let del = confirm("Esta seguro que desea eliminar la carpeta seleccionada?");
 	}else{
-		var del = confirm("Esta seguro que desea eliminar el archivo seleccionada?");
+		let del = confirm("Esta seguro que desea eliminar el archivo seleccionada?");
 	}
 
 	if (del){
@@ -399,20 +438,29 @@ function fn_rmdir(path, isFolder){
 			data.append('type', 'file');
 		}
 
+		const myHeaders = new Headers();
+
+		myHeaders.append('x-access-tokens', localStorage.getItem('personal_cloud_token'));
+
 		const url = base+'rmelement';
 		fetch(url, {
 			method: 'POST',
-			body: data
+			body: data,
+			headers: myHeaders
 		})
 		.then((resp) => resp.json())
 		.then(function(res){
-			if(res[0]['status'] == 200){
-				var linkPath = current_path; //txtPath.value;
+			if(res.status == 200){
+				let linkPath = current_path; //txtPath.value;
 				linkPath = linkPath.replaceAll('/', '*');
 				getFiles(linkPath)
-				showFlashMessage(res[0]['msg']);
+				showFlashMessage(res.msg);
 			}else{
-				showFlashMessage(res[0]['msg'], true);
+				if(!tokenIsValid(res.authorized)){
+					return;
+				}else{
+					showFlashMessage(res.msg, true);
+				}
 			}			
 		});
 	}
@@ -420,15 +468,14 @@ function fn_rmdir(path, isFolder){
 
 function showFlashMessage(msg, error = false){
 	
-	var flash_message = document.getElementById('flash_message');
-	var flash_message_msg = document.getElementById('flash_message_msg');
+	let flash_message = document.getElementById('flash_message');
+	let flash_message_msg = document.getElementById('flash_message_msg');
 	flash_message_msg.innerHTML = msg;
 
 	flash_message.classList.remove('bg-success')
 	flash_message.classList.remove('bg-danger')
 
 	if(error){
-
 		flash_message.classList.add('bg-danger');
 	}else{
 		
@@ -440,10 +487,10 @@ function showFlashMessage(msg, error = false){
 
 }
 
-var close_flash = document.getElementById('close_flash');
+let close_flash = document.getElementById('close_flash');
 if(close_flash){
 	close_flash.addEventListener('click', function(){
-		var flash_message = document.getElementById('flash_message');
+		let flash_message = document.getElementById('flash_message');
 		flash_message.style.display = 'none';
 	});
 }
@@ -461,49 +508,98 @@ async function upload(){
 
 async function uploadFiles(){
 	
-	var tot = 0;
-	//const txtPath = document.getElementById('path');
-	var path = current_path.replaceAll('*', '');// txtPath.value.replaceAll('*', '/');
+    //Reviso si no cargaron archivos manualmente
+    let file_upload = document.getElementById('file_upload')
 
-	await Promise.all(fileList.map(async (file) => {
-		var data = new FormData();
-		data.append('file', file);
-		data.append('path', path);
+    for (let i = 0; i < file_upload.files.length; i++) {
+    	fileList.push(file_upload.files[i]);
+    }
 
-		const url = base+'upload';
-		fetch(url, {
-			method: 'POST',
-			body: data
-		})
-		.then((resp) => resp.json())
-		.then(function(res){
-			tot++;
-			if(res[0]['status'] == 200){
+    let tot = 0;
+    let path = current_path.replaceAll('*', '');
 
-			}else{
-				error = true;
-				showFlashMessage(res[0]['msg'], true);
-			}
+    await Promise.all(fileList.map(async (file) => {
+    	let data = new FormData();
+    	data.append('file', file);
+    	data.append('path', path);
 
-			if(tot >= fileList.length){
-				if(!error){
-					//const txtPath = document.getElementById('path');
-					var linkPath = current_path;//txtPath.value;
-					linkPath = linkPath.replaceAll('/', '*');
+    	const myHeaders = new Headers();
 
-					getFiles(linkPath)
-					showFlashMessage('Archivo(s) subido(s) correctamente!');	
-					document.getElementById('list').innerHTML= '';
-				}
-			}			
-		});
-	}));
+    	myHeaders.append('x-access-tokens', localStorage.getItem('personal_cloud_token'));
+
+    	const url = base+'upload';
+    	fetch(url, {
+    		method: 'POST',
+    		body: data,
+    		headers: myHeaders
+    	})
+    	.then((resp) => resp.json())
+    	.then(function(res){
+    		tot++;
+    		if(res.status == 200){
+
+    		}else{
+    			error = true;
+    			showFlashMessage(res.msg, true);
+    		}
+
+    		if(tot >= fileList.length){
+    			if(!error){
+    				let linkPath = current_path;
+    				linkPath = linkPath.replaceAll('/', '*');
+
+    				getFiles(linkPath)
+    				showFlashMessage('Archivo(s) subido(s) correctamente!');	
+    				document.getElementById('list').innerHTML= '';
+    			}
+    		}			
+    	});
+    }));
 }
-
 
 let btnInitDir = document.getElementById('btnInitDir')
 if(btnInitDir){
 	btnInitDir.addEventListener('click', () => {
 		getFiles();
+	});
+}
+
+function tokenIsValid(auth){
+	if(auth == 'ok'){
+		showLoginForm(false);
+		return true;		
+	}else{
+		showLoginForm(true);
+		return false;
+	}
+}
+
+function showLoginForm(show = true){
+	if(show){
+		let frm = document.getElementById('form_login');
+		frm.setAttribute('action', base+'/login');
+		$("#modalLogin").modal('show');
+	}else{
+		$("#modalLogin").modal('hide');
+	}
+}
+
+function getDownloadFile(path, name){
+
+	const myHeaders = new Headers();
+
+	myHeaders.append('x-access-tokens', localStorage.getItem('personal_cloud_token'));
+
+	const url = base+'download_file/'+encodeURIComponent(path);
+	fetch(url,{method: 'GET',headers: myHeaders})
+	.then(function(resp){
+		return resp.blob();
+	})
+	.then(function(blob){
+		let url = window.URL.createObjectURL(blob); 
+		let a = document.createElement('a'); 
+		a.href = url; 
+		a.download = name; 
+		a.click();   
 	});
 }

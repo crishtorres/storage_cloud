@@ -12,7 +12,7 @@ def token_required(f):
 			token = request.headers['x-access-tokens']
 
 		if not token:
-			return jsonify({'authorized': 'a valid token is missing'})
+			return jsonify({'authorized': 'Error', 'msg': 'A valid token is missing'})
 
 		try:
 			#print("TOKEN : " + token)
@@ -23,7 +23,7 @@ def token_required(f):
 			current_user = Users.query.filter_by(public_id=data['public_id']).first()
 			#print(current_user)
 		except:
-			return jsonify({'authorized': 'token is invalid'})
+			return jsonify({'authorized': 'Error', 'msg': 'Token is invalid'})
 
 		return f(current_user, *args, **kwargs)
 	return decorator

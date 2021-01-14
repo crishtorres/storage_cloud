@@ -9,8 +9,8 @@ from os import environ
 
 db = SQLAlchemy()
 
-SECRET_KEY = environ.get('SECRET_KEY') #'ASF412341S@'
-print(SECRET_KEY)
+SECRET_KEY = environ.get('SECRET_KEY')
+
 if not SECRET_KEY:
     raise ValueError("No se informo la SECRET_KEY para la aplicación")
 

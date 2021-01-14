@@ -6,12 +6,8 @@ from .resources import token_required
 
 drive = Blueprint('drive', __name__)
 
-# Directorio que será la raiz de la nube
-UPLOAD_FOLDER = 'C:/Recibir/'
+UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER')
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
-
-# PATH_DEFAULT = '/home/cristian/Documents/storage_cloud/storage'
-PATH_DEFAULT = UPLOAD_FOLDER #'C:/Recibir'
 
 def getFullPath(path):
 	if UPLOAD_FOLDER[-1:] == '\'' or UPLOAD_FOLDER[-1:] == '/':
@@ -19,7 +15,7 @@ def getFullPath(path):
 	else:
 		return UPLOAD_FOLDER + "" + path
 
-@drive.route('/list/', defaults = {'path': PATH_DEFAULT})
+@drive.route('/list/', defaults = {'path': UPLOAD_FOLDER})
 @drive.route('/list/<string:path>')
 @token_required
 def getRoot(user, path):
@@ -27,16 +23,13 @@ def getRoot(user, path):
 	context = {}
 	
 	path = path.replace('*', '/').replace('..','').replace('//','/')
-	if path == '':
-		path = UPLOAD_FOLDER
+	path = UPLOAD_FOLDER if path == '' else path
 
 	tmpPath = path;
 	folders = []
 	files = []
 
-	if path != UPLOAD_FOLDER:
-		#path = UPLOAD_FOLDER + "" + path
-		path = getFullPath(path)
+	path = getFullPath(path) if path != UPLOAD_FOLDER else path
 
 	try:
 		for entry in os.scandir(path):
@@ -51,14 +44,14 @@ def getRoot(user, path):
 			else:
 				files.append(entry.name)
 
-	if path == PATH_DEFAULT or path == PATH_DEFAULT+"/":
+	if path == UPLOAD_FOLDER or path == UPLOAD_FOLDER+"/":
 		prev_path = ''
 		path = '/'
 	else:
 		path = tmpPath
 		tmp_path = os.path.abspath(path)
 
-		if tmp_path == PATH_DEFAULT:
+		if tmp_path == UPLOAD_FOLDER:
 			prev_path = ''
 		else:
 			prev_path = '..'
@@ -70,21 +63,15 @@ def getRoot(user, path):
 		'directories': folders,
 		'prev_path': prev_path
 	}
-	"""context.append({
-		'authorized': 'ok',
-		'path': path,
-		'files': files,
-		'directories': folders,
-		'prev_path': prev_path
-	})"""
-	
+
 	return jsonify(context) 
 
 @drive.route('/upload', methods = ['GET', 'POST'])
-def upload_file():
+@token_required
+def upload_file(user):
 	if request.method == 'POST':
 		dest = request.form['path']
-		res = []
+		res = {}
 
 		if dest == '':
 			dest = UPLOAD_FOLDER
@@ -97,46 +84,42 @@ def upload_file():
 		try:
 			f.save(os.path.join(dest, filename))
 		
-			res.append({
-				'msg': 'Archivo subido correctamente!', 'status': 200 
-			})
+			res = {'msg': 'Archivo subido correctamente!', 'status': 200}
 		except OSError as error:
-			res.append({
-				'msg': 'Error al subir el archivo : ' + error.strerror, 'status': 404
-			})
+			res = {'msg': 'Error al subir el archivo : ' + error.strerror, 'status': 404}
+
 		return jsonify(res)
 		
 
 @drive.route('/mkdir', methods = ['GET', 'POST'])
-def fn_mkdir():
+@token_required
+def fn_mkdir(user):
 	if request.method == 'POST':
-		res = []
+		res = {}
 
 		d_name = secure_filename(request.form['dir_name'])
 		parent_dir = request.form['parent_dir']
 
 		path = os.path.join(parent_dir, d_name)
-		path = getFullPath(path) #UPLOAD_FOLDER + "" + path
-		#print("MKDIR : " +path)
-		
+		path = getFullPath(path) 
+
 		if os.path.isdir(path):
-			res.append({'msg': 'El directorio ya existe!','status': 404})
+			res = {'msg': 'El directorio ya existe!','status': 404}
 		else:
 			try:
 				os.mkdir(path)
-				res.append({'msg': 'Directorio creado correctamente!','status': 200})
+				res = {'msg': 'Directorio creado correctamente!','status': 200}
 			except OSError as error:
 				print(error)
-				res.append({
-					'msg': 'Error al crear directorio : ' + error.strerror, 'status': 404
-				})
+				res = {'msg': 'Error al crear directorio : ' + error.strerror, 'status': 404}
 
 		return jsonify(res)
 
 @drive.route('/rmelement', methods = ['GET', 'POST'])
-def fn_rmelement():
+@token_required
+def fn_rmelement(user):
 	if request.method == 'POST':
-		res = []
+		res = {}
 
 		d_name = request.form['dir_name']
 		parent_dir = request.form['parent_dir']
@@ -147,29 +130,30 @@ def fn_rmelement():
 		
 		if type_in == 'file':
 			if not os.path.isfile(path):
-				res.append({'msg': 'El archivo no existe!', 'status': 404})
+				res = {'msg': 'El archivo no existe!', 'status': 404}
 			else:
 				try:
 					os.remove(path)
-					res.append({'msg': 'Archivo eliminado correctamente!', 'status': 200})
+					res = {'msg': 'Archivo eliminado correctamente!', 'status': 200}
 				except OSError as error:
 					print(error)
-					res.append({'msg': 'Error al eliminar el archivo : ' + error.strerror, 'status': 404})
+					res = {'msg': 'Error al eliminar el archivo : ' + error.strerror, 'status': 404}
 		else:
 			if not os.path.isdir(path):
-				res.append({'msg': 'El directorio no existe!', 'status': 404})
+				res = {'msg': 'El directorio no existe!', 'status': 404}
 			else:
 				try:
 					os.rmdir(path)
-					res.append({'msg': 'Directorio eliminado correctamente!', 'status': 200})
+					res = {'msg': 'Directorio eliminado correctamente!', 'status': 200}
 				except OSError as error:
 					print(error)
-					res.append({'msg': 'Error al eliminar directorio : ' + error.strerror, 'status': 404})
+					res = {'msg': 'Error al eliminar directorio : ' + error.strerror, 'status': 404}
 
 		return jsonify(res)
 
 @drive.route('/download_file/<string:filename>', methods = ['GET', 'POST'])
-def download_file(filename):
+@token_required
+def download_file(user, filename):
 
 	filename = filename.replace('*', '/')
 
@@ -178,7 +162,8 @@ def download_file(filename):
 	return send_from_directory(directory=download, filename=file, as_attachment=True)
 
 @drive.route('/get_file/<string:filename>', methods = ['GET', 'POST'])
-def get_file(filename):
+@token_required
+def get_file(user,filename):
 	filename = filename.replace('*', '/')
 	download = getFullPath(filename) #getFullPath(os.path.split(filename)[0])
 	#file = os.path.split(filename)[1]
