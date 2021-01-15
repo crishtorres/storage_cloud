@@ -25,8 +25,7 @@ Para lanzar la aplicación, ejecutar el directorio raíz de la app (antes de app
 flask run
 ```
 
-<img width="50%" src="https://github.com/cristdev/storage_cloud/blob/master/front/assets/img/darkmode.png">
-<img width="50%" src="https://github.com/cristdev/storage_cloud/blob/master/front/assets/img/lightmode.png">
+<img width="60%" src="https://github.com/cristdev/storage_cloud/blob/master/front/assets/img/mode.png">
 
 
 ## La misma se encuentra en desarrollo 
