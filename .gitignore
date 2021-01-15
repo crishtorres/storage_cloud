@@ -1,5 +1,6 @@
 env/
 storage/
-back/__pycache__/
+app/__pycache__/
+__pycache__/
 todo.txt
 .env

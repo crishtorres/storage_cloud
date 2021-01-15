@@ -14,6 +14,7 @@ Creamos un archivo .env para las variables de entorno en la raiz de la app (ante
 FLASK_ENV=development
 FLASK_APP=back
 FLASK_RUN_PORT=5000
+FLASK_RUN_HOST=0.0.0.0
 SECRET_KEY='TU SECRET KEY'
 UPLOAD_FOLDER='CARPETA RAIZ DE LA NUBE'
 ```

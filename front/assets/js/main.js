@@ -302,25 +302,13 @@ function getFiles(path = ''){
 	.then(function(data){
 
 		let ath = data.authorized
-		/*
-		if(ath != 'ok'){
-			showLoginForm(true);			
-			return;
-		}else{
-			showLoginForm(false);
-			//$("#modalLogin").modal('hide');
-		}*/
+
 		if(!tokenIsValid(ath)){
 			return;
 		}
 
 		make_breadcrumb(path);
-		/*
-		let files = data[0]["files"]
-		let directories = data[0]["directories"]
-		let mainPathTmp = data[0]["path"]
-		let prev_path = data[0]["prev_path"]
-		*/
+
 		let files = data.files
 		let directories = data.directories
 		let mainPathTmp = data.path
@@ -368,7 +356,8 @@ function getFiles(path = ''){
 
 	})
 	.catch(function(error){
-		console.log(error);
+		// console.log(error);
+		container.innerHTML = "<div class='col-md-12 col-xs-12 text-center'><span class='label label-danger'>No hay conexión con el servidor</span><br><br></div><div class='col-md-12 col-xs-12'><img style='margin:auto; max-width:100px;' class='img-responsive' src='./assets/img/cloud-error.svg'></div>";
 	});
 }
 
@@ -616,3 +605,12 @@ function getDownloadFile(path, name){
 		a.click();   
 	});
 }
+
+// Select the button
+const btn = document.querySelector('.switch_3');
+
+// Listen for a click on the button
+btn.addEventListener('click', function() {
+  // Then toggle (add/remove) the .dark-theme class to the body
+  document.body.classList.toggle('dark-theme');  
+})
