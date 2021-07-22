@@ -26,7 +26,6 @@ def signup_user(user):
 def login_user(): 
  
 	auth = request.authorization   
-	#print(auth)
 
 	if not auth or not auth.username or not auth.password:  
 		return make_response('could not verify', 401, {'WWW.Authentication': 'Basic realm: "login required"'})    
